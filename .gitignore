@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Environments
+.venv/
+venv/
+.env
+
+# macOS / editors
+.DS_Store
+.vscode/
+
+# Data and models (usually too big for git)
+data/
+*.csv
+*.pkl
+*.pt
