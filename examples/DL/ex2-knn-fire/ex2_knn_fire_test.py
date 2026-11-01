@@ -1,7 +1,6 @@
 from joblib import load
 import glob
 import os
-
 import cv2
 
 model = load("model/KNN_classifier_fire.joblib")
