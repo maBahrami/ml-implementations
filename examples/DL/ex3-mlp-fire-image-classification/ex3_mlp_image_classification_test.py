@@ -10,7 +10,7 @@ net = models.load_model("model/mlp_classifier_fire.keras")
 
 labels = ["fire", "not fire"]
 
-for address in glob.glob("data/*"):
+for address in glob.glob("data/fire_test/*"):
 
     # Skip folders
     if os.path.isdir(address):
