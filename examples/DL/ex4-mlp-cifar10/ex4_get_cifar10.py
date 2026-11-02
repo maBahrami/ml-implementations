@@ -1,3 +1,9 @@
+# You end up with the same data as cifar10.load_data(): 
+# uint8 arrays of shape (50000, 32, 32, 3) and (10000, 32, 32, 3), 
+# plus integer labels. The only difference is that the labels are 1-D here, 
+# while Keras gives shape (N, 1). sparse_categorical_crossentropy accepts either, 
+# so this doesn’t matter for training.
+
 import numpy as np
 from datasets import load_dataset
 
