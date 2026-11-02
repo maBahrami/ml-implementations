@@ -38,6 +38,7 @@ labels = to_categorical(labels)
 # spliting the dataset into test and train
 x_train, x_test, y_train, y_test = train_test_split(feature_vecotrs, labels, test_size=0.2)
 
+# a network with 2 hidden layers
 net = models.Sequential([
     layers.Input(shape=(3072,)),
     layers.Dense(300, activation="relu"),
@@ -59,8 +60,8 @@ print(f"loss: {loss:.2f}    accuaracy:{acc:.2f}")
 
 plt.plot(H.history["accuracy"], label="train accuracy")
 plt.plot(H.history["val_accuracy"], label="test accuracy")
-plt.plot(H.history["loss"], label="train accuracy")
-plt.plot(H.history["val_loss"], label="test accuracy")
+plt.plot(H.history["loss"], label="train loss")
+plt.plot(H.history["val_loss"], label="test loss")
 plt.legend()
 plt.xlabel("epochs")
 plt.ylabel("accuracy")
