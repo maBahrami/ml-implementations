@@ -3,6 +3,7 @@ import numpy as np
 import glob
 from sklearn.model_selection import train_test_split
 from tensorflow.keras import models, layers
+from tensorflow.keras import models
 from sklearn.preprocessing import LabelEncoder
 from tensorflow.keras.utils import to_categorical
 import matplotlib.pyplot as plt
@@ -50,7 +51,10 @@ net.compile(optimizer="SGD",
             loss="categorical_crossentropy",
             metrics=["accuracy"])
 
-H = net.fit(x_train, y_train, batch_size=32, validation_data=(x_test, y_test), epochs=50)
+H = net.fit(x_train, y_train, batch_size=32, validation_data=(x_test, y_test), epochs=20)
+
+loss, acc = net.evaluate(x_test, y_test)
+print(f"loss: {loss:.2f}    accuaracy:{acc:.2f}")
 
 
 plt.plot(H.history["accuracy"], label="train accuracy")
@@ -62,3 +66,5 @@ plt.xlabel("epochs")
 plt.ylabel("accuracy")
 plt.title("Fire Classification")
 plt.show()
+
+net.save("model/mlp.keras")
