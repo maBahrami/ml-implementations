@@ -9,10 +9,9 @@ nA = env.action_space.n
 gamma = 0.99
 threshold = 1e-10
 
-policy = np.ones((nS, nA)) / nA
-# print(random_policy)
 
-def policy_evaluation():
+
+def policy_evaluation(policy):
 
     prev_V = np.zeros(nS)
     iteration = 0
@@ -20,6 +19,7 @@ def policy_evaluation():
     while True:
         delta = 0
         V = np.zeros(nS)
+        iteration += 1
 
         for state in range(nS):
             for action in range(nA):
@@ -32,10 +32,33 @@ def policy_evaluation():
             break
 
         prev_V = np.copy(V)
-        iteration += 1
+        
 
     return V, iteration
 
 
-V, iteration = policy_evaluation()
-print(V, "\n\nnumber of iterations: ",iteration, "\n")
+
+
+policy_1 = np.ones((nS, nA)) / nA           # random policy
+policy_2 = np.array([                       # deterministic policy
+                        [0, 0, 1, 0],
+                        [1, 0, 0, 0],
+                        [0, 1, 0, 0],
+                        [0, 0, 0, 1],
+                        [1, 0, 0, 0],
+                        [1, 0, 0, 0],
+                        [0, 0, 1, 0],
+                        [1, 0, 0, 0],
+                        [0, 0, 0, 1],
+                        [0, 1, 0, 0],
+                        [0, 0, 0, 1],
+                        [1, 0, 0, 0],
+                        [1, 0, 0, 0],
+                        [0, 0, 1, 0],
+                        [0, 1, 0, 0],
+                        [0, 1, 0, 0],
+                    ])
+
+
+V, iteration = policy_evaluation(policy_2)
+print("\n", V.reshape((4, 4)), "\n\nnumber of iterations: ",iteration, "\n")
