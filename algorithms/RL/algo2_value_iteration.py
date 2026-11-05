@@ -29,18 +29,14 @@ def value_iteration(V_prev):
 
         V_prev = np.copy(V)
 
-    Q = np.zeros((nS, nA))
-    for state in range(nS):
-        for action in range(nA):
-            for prob, next_state, reward, _ in env.unwrapped.P[state][action]:
-                Q[state, action] += prob * (reward + gamma * V[next_state])
-
+    # finding the optimal policy based on the optimal state value
     policy = np.zeros((nS, nA))
     cols = Q.argmax(axis=1)
     rows = range(nS)
     policy[rows, cols] = 1
 
     return policy
+
 
 start = time.time()
 policy = value_iteration(initial_V)
