@@ -9,6 +9,27 @@ nA = env.action_space.n
 gamma = 0.99
 threshold = 1e-10
 
+# initial policies
+initial_policy_1 = np.ones((nS, nA)) / nA           # random policy
+initial_policy_2 = np.array([                       # deterministic policy
+                        [0, 0, 1, 0],
+                        [1, 0, 0, 0],
+                        [0, 1, 0, 0],
+                        [0, 0, 0, 1],
+                        [1, 0, 0, 0],
+                        [1, 0, 0, 0],
+                        [0, 0, 1, 0],
+                        [1, 0, 0, 0],
+                        [0, 0, 0, 1],
+                        [0, 1, 0, 0],
+                        [0, 0, 0, 1],
+                        [1, 0, 0, 0],
+                        [1, 0, 0, 0],
+                        [0, 0, 1, 0],
+                        [0, 1, 0, 0],
+                        [0, 1, 0, 0],
+                    ])
+
 
 
 def policy_evaluation(policy):
@@ -54,43 +75,44 @@ def policy_improvement(V):
     return Q, policy
 
 
-# initial policies
-initial_policy_1 = np.ones((nS, nA)) / nA           # random policy
-initial_policy_2 = np.array([                       # deterministic policy
-                        [0, 0, 1, 0],
-                        [1, 0, 0, 0],
-                        [0, 1, 0, 0],
-                        [0, 0, 0, 1],
-                        [1, 0, 0, 0],
-                        [1, 0, 0, 0],
-                        [0, 0, 1, 0],
-                        [1, 0, 0, 0],
-                        [0, 0, 0, 1],
-                        [0, 1, 0, 0],
-                        [0, 0, 0, 1],
-                        [1, 0, 0, 0],
-                        [1, 0, 0, 0],
-                        [0, 0, 1, 0],
-                        [0, 1, 0, 0],
-                        [0, 1, 0, 0],
-                    ])
+def policy_iteration(policy):
+
+    i = 0
+    Q_prev = np.zeros((nS, nA))
+
+    while True:
+        i += 1
+        V, _ = policy_evaluation(policy)
+        Q, policy_updated = policy_improvement(V)
+        
+        if np.array_equal(policy, policy_updated):
+            break
+
+        policy = policy_updated
+
+    return policy, i
 
 
-# V, iteration = policy_evaluation(initial_policy_2)
-# print("\n", V.reshape((4, 4)), "\n\nnumber of iterations: ",iteration, "\n")
-# Q, po
+# finding optimal policy stating from a random initial policy
+start = time.time()     
+optimal_policy_1, iteration_1 = policy_iteration(initial_policy_1)
+end = time.time()
+elapsed_time_1 = end - start
+print(f"optimal policy is:\n\n{optimal_policy_1}")
+print(f"\nnumber of policy iteration: {iteration_1}\n")
+print(f"elapsed time: {elapsed_time_1:.3f}s")
 
-policy = initial_policy_1
-Q_prev = np.zeros((nS, nA))
+# finding optimal policy stating from a deterministic initial policy
+start = time.time()     
+optimal_policy_2, iteration_2 = policy_iteration(initial_policy_2)
+end = time.time()
+elapsed_time_2 = end - start
+print(f"optimal policy is:\n\n{optimal_policy_2}")
+print(f"\nnumber of policy iteration: {iteration_2}\n")
+print(f"elapsed time: {elapsed_time_2:.3f}s")
 
-while True:
-    V, _ = policy_evaluation(policy)
-    Q, policy = policy_improvement(V)
-
-    if np.max(np.abs(Q-Q_prev)) < threshold:
-        break
-
-    Q_prev = np.copy(Q)
-
-print(policy)
-
+# checking the final optimal policies resulting from two different initial policies
+if np.array_equal(optimal_policy_1, optimal_policy_2):
+    print("\n** both policies are the SAME **\n")
+else:
+    print("\n** DIFFERENT optimal policies **\n")
