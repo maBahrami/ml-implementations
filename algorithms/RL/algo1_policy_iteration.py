@@ -98,8 +98,8 @@ start = time.time()
 optimal_policy_1, iteration_1 = policy_iteration(initial_policy_1)
 end = time.time()
 elapsed_time_1 = end - start
-print(f"optimal policy is:\n\n{optimal_policy_1}")
-print(f"\nnumber of policy iteration: {iteration_1}\n")
+print(f"\noptimal policy is:\n\n{optimal_policy_1}")
+print(f"\nnumber of policy iteration: {iteration_1}")
 print(f"elapsed time: {elapsed_time_1:.3f}s")
 
 # finding optimal policy stating from a deterministic initial policy
@@ -107,12 +107,15 @@ start = time.time()
 optimal_policy_2, iteration_2 = policy_iteration(initial_policy_2)
 end = time.time()
 elapsed_time_2 = end - start
-print(f"optimal policy is:\n\n{optimal_policy_2}")
-print(f"\nnumber of policy iteration: {iteration_2}\n")
+print("--------------------------------------------")
+print(f"\noptimal policy is:\n\n{optimal_policy_2}")
+print(f"\nnumber of policy iteration: {iteration_2}")
 print(f"elapsed time: {elapsed_time_2:.3f}s")
 
 # checking the final optimal policies resulting from two different initial policies
+print("--------------------------------------------")
 if np.array_equal(optimal_policy_1, optimal_policy_2):
-    print("\n** both policies are the SAME **\n")
+    print("** both policies are the SAME **")
 else:
-    print("\n** DIFFERENT optimal policies **\n")
+    print("** DIFFERENT optimal policies **")
+print("--------------------------------------------")
