@@ -5,7 +5,7 @@ import gymnasium as gym
 
 
 env = gym.make("Blackjack-v1", natural=False, sab=False)
-number_of_iterations = 100000
+num_episode = 100000
 gamma = 1
 
 
@@ -35,28 +35,22 @@ def predict(policy, num_episode):
     for _ in range(num_episode):
         traj, T = generate_episode(env, policy)
         G = 0
-        print(traj)
 
-    # staring form second-to-last state till the first one
-    for t in range(T-1, -1, -1):
-        St, _, _, _ = traj[t]
-        _, Rt_1, _, _ = traj[t+1]
-        G = gamma * G + Rt_1
-        print(St, Rt_1)
+        # staring form second-to-last state till the first one
+        for t in range(T-1, -1, -1):
+            St, _, _, _ = traj[t]
+            _, Rt_1, _, _ = traj[t+1]
+            G = gamma * G + Rt_1
 
-        if St not in [traj[i][0] for i in range(0, t)]:
-            Returns[St].append(G)
-            V[St] = np.average(Returns[St])
+            if St not in [traj[i][0] for i in range(0, t)]:
+                Returns[St].append(G)
+                V[St] = np.average(Returns[St])
 
     return V
-
-
-
-
 
 
 # tra, a = generate_episode(env, policy=policy_1)
 # print("\n", tra, "\n")
 # print(a)
 
-predict(policy_1, 1)
+V = predict(policy_1, num_episode = 2)
