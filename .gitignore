@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 .ipynb_checkpoints/
 dummy.py
+dummy.ipynb
 
 # Environments
 .venv/

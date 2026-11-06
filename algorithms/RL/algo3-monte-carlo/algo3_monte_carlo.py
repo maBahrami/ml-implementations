@@ -4,16 +4,16 @@ from collections import defaultdict
 import gymnasium as gym
 
 
-num_timestep = 50000
+num_of_episodes = 50000
 
 env = gym.make("Blackjack-v1", natural=False, sab=False)
 
 
-def policy(state):
+def policy_1(state):                  # considering any initial policy out of nowhere
     return 0 if state > 19 else 1
 
 
-def generate_episode():
+def generate_episode(policy):            # geneating an episode according ot the policy
     episode = []
     state, _ = env.reset()
     # print(state)
@@ -33,30 +33,30 @@ def generate_episode():
     return episode
 
 
-total_return = defaultdict(float)
-N = defaultdict(int)
-num_of_iterations = 1000
+def predict_return(policy, first_visit=True):       # first_visit = True  --> first-visit
+                                            # first_visit = False --> every-visit
+    total_return = defaultdict(float)
+    N = defaultdict(int)
 
-for i in range(num_of_iterations):
-    episode = generate_episode()
-    states, actions, rewards = zip(*episode)
-    print(states)
+    for i in range(num_of_episodes):
+        episode = generate_episode(policy)        # episode is a list like: [(state, action, reward), . . . ]
+                                             # and state is like: (sum of our cards, dealer's card, ace)
+        states, actions, rewards = zip(*episode)
 
-    for t, state in enumerate(states):
-        R = (sum(rewards[t:]))
-        total_return[state] += R
-        N[state] += 1
+        for t, state in enumerate(states):
+            if first_visit and state in states[:t]:
+                continue
+            else:
+                R = sum(rewards[t:])
+                total_return[state] += R
+                N[state] += 1
 
-    print(total_return)
-    # print(N)
-    print("______-------______------_____-------_____")
-
-
-# episode = generate_episode()
-# print("\n", episode, "\n\n")
-
+        if i % 10000 == 0:
+            print(f"[INFO]   {i} iterations passed")
 
 
+    return total_return, N
 
 
 
+total_return, N = predict_return(policy=policy_1, first_visit=True)
