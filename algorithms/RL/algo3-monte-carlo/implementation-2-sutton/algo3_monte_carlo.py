@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from collections import defaultdict
 import gymnasium as gym
+from visualization import plot_blackjack
 
 
 env = gym.make("Blackjack-v1", natural=False, sab=False)
@@ -32,7 +33,7 @@ def predict(policy, num_episode):
     V = defaultdict()
     Returns = defaultdict(list)
 
-    for _ in range(num_episode):
+    for episode_counter in range(num_episode):
         traj, T = generate_episode(env, policy)
         G = 0
 
@@ -46,11 +47,12 @@ def predict(policy, num_episode):
                 Returns[St].append(G)
                 V[St] = np.average(Returns[St])
 
+        if episode_counter % 10000 == 0:
+            print(f"[INFO]   {episode_counter} iterations passed")
+
     return V
 
 
-# tra, a = generate_episode(env, policy=policy_1)
-# print("\n", tra, "\n")
-# print(a)
-
-V = predict(policy_1, num_episode = 2)
+# V = predict(policy_1, num_episode = 2)
+V = predict(policy_1, num_episode=500000)
+plot_blackjack(V)
