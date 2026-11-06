@@ -4,8 +4,6 @@ from collections import defaultdict
 import gymnasium as gym
 
 
-num_of_episodes = 50000
-
 env = gym.make("Blackjack-v1", natural=False, sab=False)
 
 
@@ -33,15 +31,18 @@ def generate_episode(policy):
     return episode
 
 
-def predict_return(policy, first_visit=True):
+def predict_value(policy, method, num_of_episodes):
     """Estimate state returns with Monte Carlo.
 
-    first_visit=True  -> first-visit MC
-    first_visit=False -> every-visit MC
+    method = "first_visit"  -> first-visit MC
+    method = "every_visit"  -> every-visit MC
     """
 
     total_return = defaultdict(float)
     N = defaultdict(int)
+
+    if method not in ("first_visit", "every_visit"):
+        raise ValueError(f"unknown method: {method}")
 
     for i in range(num_of_episodes):
         # episode is a list like: [(state, action, reward), . . . ]
@@ -50,7 +51,7 @@ def predict_return(policy, first_visit=True):
         states, _, rewards = zip(*episode)
 
         for t, state in enumerate(states):
-            if first_visit and state in states[:t]:
+            if method == "first_visit" and state in states[:t]:
                 continue
 
             R = sum(rewards[t:])
@@ -60,8 +61,17 @@ def predict_return(policy, first_visit=True):
         if i % 10000 == 0:
             print(f"[INFO]   {i} iterations passed")
 
-    return total_return, N
+    total_return = pd.DataFrame(total_return.items(), columns=["state", "total_return"])
+    N = pd.DataFrame(N.items(), columns=["state", "N"])
+    df = pd.merge(total_return, N, on="state")
+    df["value"] = df["total_return"] / df["N"]
+
+    return df
 
 
+df = predict_value(policy=policy_1, method="every_visit", num_of_episodes=500000)
 
-total_return, N = predict_return(policy=policy_1, first_visit=True)
+df = df.sort_values("value", ascending=False)
+print(df.head(10))
+print(df.tail(10))
+# print(df[df["state"] == (18, 5, 0)]["value"])
