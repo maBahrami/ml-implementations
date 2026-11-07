@@ -3,7 +3,8 @@ import pandas as pd
 from collections import defaultdict
 import gymnasium as gym
 from visualization import plot_blackjack
-from collections import defaultdict
+import matplotlib.pyplot as plt
+
 
 env = gym.make("Blackjack-v1", natural=False, sab=False)
 num_episode = 100000
@@ -65,7 +66,23 @@ def on_policy_mc_control(env, ep, gamma, eps):
 
     return Q, pi
 
+
 Q, pi = on_policy_mc_control(env, 500000, gamma=1.0, eps=0.05)
-pi = pd.DataFrame(pi.items(), columns=["state-action", "probability"])
-print(pi.head(10))
-print(pi.tail(10))
+
+# policy as a table
+pi_df = pd.DataFrame(pi.items(), columns=["state-action", "probability"])
+print(pi_df.head(10))
+print(pi_df.tail(10))
+ 
+# state values: V(s) = value of the best action in s
+states = {s for (s, a) in Q}
+V = {s: max(Q[(s, a)] for a in range(nb_actions)) for s in states}
+ 
+# greedy policy: 0 = stick, 1 = hit
+greedy = {s: int(np.argmax([Q[(s, a)] for a in range(nb_actions)])) for s in states}
+
+plt.ion()                    
+plot_blackjack(V)
+plot_blackjack(greedy)
+plt.ioff()
+plt.show()  
